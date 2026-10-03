@@ -1,0 +1,83 @@
+/* 화면 1. 결정 입력 (목업 1페이지) */
+
+/* 상단 안내 카드: 연주황 배경 + 주황 테두리, 왼쪽 전구 원 */
+.s1-hero {
+  display: flex; align-items: center; gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-primary-tint);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-card);
+}
+.s1-hero-icon {
+  flex: none;
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary);
+  background: var(--color-surface);
+  color: var(--color-primary-ink);
+  display: grid; place-items: center;
+}
+.s1-hero-title { margin: 0 0 var(--space-1); font-size: var(--fs-title); font-weight: var(--fw-bold); line-height: var(--lh-title); }
+.s1-hero-title em { font-style: normal; color: var(--color-primary-ink); }
+.s1-hero-sub { margin: 0; color: var(--color-text-sub); font-size: var(--fs-body); }
+
+.s1-followup {
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  border: 1px dashed var(--color-primary);
+  color: var(--color-primary-ink);
+  font-size: var(--fs-caption);
+}
+
+/* 번호 카드: 왼쪽 주황 세로선 */
+.s1-card {
+  display: flex; flex-direction: column; gap: var(--space-4);
+  padding: var(--space-4) var(--space-4) var(--space-4) calc(var(--space-4) + 2px);
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  border-left: 4px solid var(--color-primary);
+  box-shadow: var(--shadow-card);
+}
+.s1-card-title { margin: 0; display: flex; align-items: center; gap: var(--space-3); font-size: var(--fs-section); font-weight: var(--fw-bold); }
+.s1-step {
+  flex: none;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary-ink);
+  display: grid; place-items: center;
+  font-size: 15px; font-weight: var(--fw-bold);
+}
+
+/* 예시 고르기 (체험판) */
+.s1-samples { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-top: calc(var(--space-2) * -1); }
+.s1-sample {
+  min-height: 32px;
+  padding: 0 var(--space-3);
+  border-radius: 999px;
+  border: 1px solid var(--color-border-control);
+  background: var(--color-surface);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  position: relative;
+}
+.s1-sample::after { content: ''; position: absolute; inset: -6px 0; } /* 터치 영역 44px */
+.s1-sample[aria-pressed="true"] { border-color: var(--color-primary); background: var(--color-primary-soft); color: var(--color-primary-ink); }
+
+/* 선택지 입력: 원(A/B/C) + 입력창(선택지 색 테두리) + 삭제 */
+.s1-options { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-4); }
+.s1-option { display: flex; align-items: center; gap: var(--space-3); }
+.s1-opt-input { flex: 1; border: 1.5px solid var(--opt); }
+.s1-remove {
+  flex: none;
+  width: var(--touch-min); height: var(--touch-min);
+  margin-right: calc(var(--space-2) * -1);
+  border: 0; background: transparent; cursor: pointer;
+  display: grid; place-items: center;
+  color: var(--color-text);
+}
+.s1-add { align-self: flex-start; padding: 0 var(--space-6); }
+.s1-card .input { font-size: var(--fs-section); }

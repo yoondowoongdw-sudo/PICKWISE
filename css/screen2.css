@@ -1,0 +1,63 @@
+/* 화면 2. 기준 선택 (목업 2페이지) */
+.s2-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.s2-cell { position: relative; display: flex; }
+.s2-card { padding-left: var(--space-4); padding-right: var(--space-3); gap: var(--space-3); min-height: 56px; }
+.s2-card[aria-pressed="true"] { padding-left: calc(var(--space-4) - 1px); padding-right: calc(var(--space-3) - 1px); }
+.s2-icon { display: inline-flex; color: var(--color-text-sub); }
+.s2-card[aria-pressed="true"] .s2-icon { color: var(--color-primary-ink); }
+.s2-label { flex: 1; display: flex; flex-direction: column; font-size: 15px; font-weight: var(--fw-medium); line-height: var(--lh-title); }
+.s2-user { font-weight: var(--fw-medium); }
+
+/* 직접 추가·칩으로 넣은 기준의 삭제 버튼 (카드 오른쪽 위) */
+.s2-delete {
+  position: absolute; top: -10px; right: -10px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-control);
+  background: var(--color-surface);
+  display: grid; place-items: center;
+  cursor: pointer;
+}
+.s2-delete::after { content: ''; position: absolute; inset: -8px; } /* 터치 영역 44px */
+
+/* 점선 '+ 직접 추가' 카드 */
+.s2-add-card {
+  min-height: 56px;
+  border: 1px dashed var(--color-border-control);
+  border-radius: var(--radius-card);
+  background: transparent;
+  color: var(--color-text-sub);
+  font-size: 15px;
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+.s2-add-card:hover { border-color: var(--color-primary); color: var(--color-primary-ink); }
+.s2-add-form { grid-column: 1 / -1; display: flex; flex-direction: column; gap: var(--space-2); }
+.s2-add-actions { display: flex; gap: var(--space-2); justify-content: flex-end; }
+
+/* '이런 기준도 고려해보세요' 상자: 연주황 배경 + 주황 테두리 */
+.s2-extra {
+  display: flex; flex-direction: column; gap: var(--space-4);
+  padding: var(--space-6) var(--space-4);
+  background: var(--color-primary-tint);
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-card);
+}
+.s2-extra-title {
+  margin: 0;
+  display: flex; align-items: center; gap: var(--space-2);
+  color: var(--color-primary-ink);
+  font-size: 18px; font-weight: var(--fw-bold);
+}
+.s2-extra .caption { margin: 0; color: var(--color-warn-text); }
+
+.s2-banner { display: flex; flex-direction: column; gap: var(--space-2); }
+.s2-banner p { margin: 0; }
+.s2-chips { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+.s2-banner-close {
+  margin-left: auto;
+  width: var(--touch-min); height: var(--touch-min);
+  border: 0; background: transparent; cursor: pointer;
+  display: grid; place-items: center;
+}
+.s2-warn { color: var(--color-warn-text); }

@@ -1,0 +1,49 @@
+/* 화면 6. 다음 결정 (목업 6페이지) */
+
+/* 나의 결정 카드 */
+.s6-chain { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4) var(--space-6); }
+.s6-chain-title { margin: 0; color: var(--color-text-sub); font-size: var(--fs-body); font-weight: var(--fw-regular); }
+.s6-nodes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.s6-node { position: relative; display: flex; gap: var(--space-4); align-items: flex-start; padding-bottom: var(--space-4); }
+.s6-node:last-child { padding-bottom: 0; }
+/* 노드 사이 세로선 */
+.s6-node:not(:last-child)::before {
+  content: ''; position: absolute; left: 16px; top: 38px; bottom: 4px;
+  border-left: 1px solid var(--color-border-control);
+}
+.s6-num {
+  flex: none; width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center;
+  border: 1px solid var(--color-border-control);
+  background: var(--color-surface);
+  font-size: 15px; font-weight: var(--fw-semibold);
+}
+.s6-node.is-current .s6-num { border-color: var(--color-text-sub); }
+.s6-node-body { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.s6-node-title { font-size: var(--fs-section); font-weight: var(--fw-semibold); }
+.s6-node-opts { color: var(--color-text-sub); font-size: var(--fs-body); }
+.s6-result { font-size: var(--fs-section); font-weight: var(--fw-bold); }
+.s6-status { margin-top: var(--space-1); font-size: var(--fs-body); font-weight: var(--fw-medium); }
+.s6-status-done { color: var(--color-success); }
+.s6-status-pending { color: var(--color-warn-text); }
+.s6-status-recheck { color: var(--color-error-ink); }
+
+/* 추천 고민 카드 */
+.s6-list { display: flex; flex-direction: column; gap: var(--space-3); }
+.s6-card { align-items: flex-start; padding: var(--space-4) var(--space-6); border-color: var(--color-line); box-shadow: var(--shadow-card); }
+.s6-card[aria-checked="true"] { padding: calc(var(--space-4) - 1px) calc(var(--space-6) - 1px); }
+.s6-card-body { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.s6-tag { color: var(--color-primary-ink); font-size: var(--fs-body); font-weight: var(--fw-semibold); }
+.s6-card-title { font-size: 18px; font-weight: var(--fw-bold); }
+.s6-reason { color: var(--color-text-sub); font-size: var(--fs-body); }
+.s6-custom-btn {
+  min-height: 60px;
+  border: 1px dashed var(--color-border-control);
+  border-radius: var(--radius-card);
+  background: transparent;
+  color: var(--color-text-sub);
+  font-size: 15px;
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+.s6-custom-btn:hover { border-color: var(--color-primary); color: var(--color-primary-ink); }

@@ -1,0 +1,72 @@
+/* 화면 3. 중요도 설정 (목업 3페이지): 기준마다 흰 카드 한 줄 = 아이콘+이름 / 슬라이더 / 숫자 */
+.s3-list { display: flex; flex-direction: column; gap: var(--space-3); }
+.s3-row {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-2) var(--space-4);
+  min-height: 64px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.s3-line { display: flex; align-items: center; gap: var(--space-3); }
+.s3-name {
+  flex: none; width: 112px;
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  font-size: var(--fs-section); font-weight: var(--fw-bold);
+}
+.s3-name svg { color: var(--color-text-sub); }
+.s3-name span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* 숫자: 박스 없이 굵게, 오른쪽 정렬 (포커스 때만 밑줄) */
+.s3-number {
+  flex: none;
+  width: 44px;
+  min-height: var(--touch-min);
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  text-align: right;
+  font-size: 17px;
+  font-weight: var(--fw-bold);
+  -moz-appearance: textfield;
+}
+.s3-number::-webkit-outer-spin-button, .s3-number::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.s3-number:focus-visible { border-bottom-color: var(--color-focus-ring); outline: none; }
+
+/* 슬라이더: 채움 주황, 트랙 경계 border-control, 핸들 보이는 크기 20px · 터치 영역 44px */
+.s3-slider {
+  flex: 1; min-width: 0;
+  -webkit-appearance: none; appearance: none;
+  height: var(--touch-min);
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.s3-slider::-webkit-slider-runnable-track {
+  height: 6px; border-radius: 3px;
+  border: 1px solid var(--color-border-control);
+  background: linear-gradient(to right, var(--color-primary) var(--fill), var(--color-surface) var(--fill));
+}
+.s3-slider::-moz-range-track {
+  height: 6px; border-radius: 3px;
+  border: 1px solid var(--color-border-control);
+  background: linear-gradient(to right, var(--color-primary) var(--fill), var(--color-surface) var(--fill));
+}
+.s3-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 44px; height: 44px;
+  margin-top: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--color-surface) 0 8px, var(--color-primary) 8px 10px, transparent 10px);
+  border: 0;
+}
+.s3-slider::-moz-range-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 2px solid var(--color-primary);
+}
+.s3-slider:focus-visible { outline: var(--focus-ring-width) solid var(--color-focus-ring); outline-offset: var(--focus-ring-offset); border-radius: 4px; }
+.s3-zero { margin: 0 0 var(--space-1); }
+.s3-allzero { text-align: center; }

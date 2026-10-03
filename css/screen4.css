@@ -1,0 +1,43 @@
+/* 화면 4. 정보 입력 (목업 4페이지) */
+.s4-field { display: flex; flex-direction: column; gap: var(--space-3); }
+.s4-label { display: flex; align-items: center; gap: var(--space-3); font-size: 17px; font-weight: var(--fw-bold); }
+/* 입력창 테두리는 선택지 색 (1번 주황 / 2번 진회색 …) */
+.s4-textarea { border: 1.5px solid var(--opt); border-radius: var(--radius-card); }
+
+.s4-attach { display: flex; flex-direction: column; gap: var(--space-2); }
+.s4-attach-head { display: flex; align-items: center; justify-content: space-between; }
+.s4-attach-title { margin: 0; font-size: var(--fs-section); font-weight: var(--fw-bold); }
+.s4-guide { margin: 0; }
+.s4-help {
+  width: var(--touch-min); height: var(--touch-min);
+  margin-right: calc(var(--space-2) * -1);
+  border: 0; background: transparent; cursor: pointer;
+  color: var(--color-text-sub);
+  display: grid; place-items: center;
+}
+
+/* 점선 첨부 영역: '+ 파일 추가' 버튼 + 안내, 아래에 첨부된 파일 */
+.s4-drop {
+  display: flex; flex-direction: column; gap: var(--space-4);
+  padding: var(--space-6) var(--space-4);
+  border: 1px dashed var(--color-border-control);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+.s4-drop-row { display: flex; align-items: center; gap: var(--space-4); }
+.s4-drop-btn {
+  display: inline-flex; align-items: center;
+  min-height: 56px;
+  padding: 0 var(--space-6);
+  border: 1px solid var(--color-text);
+  border-radius: 10px;
+  background: var(--color-surface);
+  font-size: 17px; font-weight: var(--fw-bold);
+  cursor: pointer;
+}
+.s4-drop-btn:focus-within { outline: var(--focus-ring-width) solid var(--color-focus-ring); outline-offset: var(--focus-ring-offset); }
+.s4-hint { color: var(--color-text-sub); }
+.s4-files { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+.s4-files li { display: flex; align-items: center; gap: var(--space-2); }
+.s4-fname { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-section); }
+.s4-remove { width: var(--touch-min); height: 36px; border: 0; background: transparent; cursor: pointer; display: grid; place-items: center; }

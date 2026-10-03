@@ -8,6 +8,7 @@
 //   ctx.state   앱 전체 데이터 (js/store.js 참고)
 //   ctx.save()  state 를 바꾼 뒤 불러서 저장
 //   ctx.go(n)   n번 화면으로 이동,  ctx.next()  다음 화면으로 이동
+//   ctx.alive() 기다리는(await) 동안 다른 화면으로 넘어갔으면 false → 그때는 화면을 그리지 않아요
 window.Pickwise = window.Pickwise || {};
 Pickwise.screens = Pickwise.screens || {};
 
@@ -17,9 +18,18 @@ Pickwise.screens = Pickwise.screens || {};
   const backBtn = document.getElementById('back-btn');
   const badgeEl = document.getElementById('step-badge');
   const titleEl = document.getElementById('header-title');
+  let renderId = 0;
 
   backBtn.setAttribute('aria-label', Pickwise.t('common.back_aria'));
   backBtn.addEventListener('click', () => history.back());
+
+  // 화면에 <i data-lucide="..."> 가 생기면 실제 아이콘 그림으로 바꿔요
+  let iconQueued = false;
+  new MutationObserver(() => {
+    if (iconQueued || !window.lucide || !document.querySelector('i[data-lucide]')) return;
+    iconQueued = true;
+    setTimeout(() => { iconQueued = false; window.lucide.createIcons(); }, 0);
+  }).observe(document.body, { childList: true, subtree: true });
 
   function currentStep() {
     const n = parseInt((location.hash.match(/^#\/(\d)/) || [])[1], 10);
@@ -43,18 +53,24 @@ Pickwise.screens = Pickwise.screens || {};
       screenEl.innerHTML = `<p>${step}번 화면 파일이 아직 없어요.</p>`;
       return;
     }
+    const id = ++renderId;
     const ctx = {
       step,
       state: Pickwise.store.state,
       save: Pickwise.store.save,
       go,
       next: () => go(Math.min(step + 1, TOTAL)),
+      alive: () => id === renderId,
+    };
+    const showError = (err) => {
+      console.error(err);
+      if (ctx.alive()) screenEl.innerHTML = `<p class="error-text">${Pickwise.ui.escape(Pickwise.t('common.error_generic'))}</p>`;
     };
     try {
-      screen.render(screenEl, ctx);
+      const result = screen.render(screenEl, ctx);
+      if (result && result.catch) result.catch(showError);
     } catch (err) {
-      console.error(err);
-      screenEl.innerHTML = `<p class="error-text">${Pickwise.ui.escape(Pickwise.t('common.error_generic'))}</p>`;
+      showError(err);
     }
     window.scrollTo(0, 0);
   }

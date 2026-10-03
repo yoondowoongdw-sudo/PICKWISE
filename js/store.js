@@ -10,6 +10,8 @@ window.Pickwise = window.Pickwise || {};
       // 화면 1 → 2: 결정 주제와 선택지
       decision: {
         id: 'decision_' + Date.now(),
+        sample_id: null,        // 고른 예시 (data/samples.js 의 id)
+        title: '',              // 결정 기록에 쓰는 짧은 제목 (예: 여행지 결정)
         topic: '',
         category: '',
         options: [],            // [{ id, label }]
@@ -27,7 +29,9 @@ window.Pickwise = window.Pickwise || {};
       // 화면 5 → 6
       selected_option: null,    // optionId
       // 화면 6: 결정 기록 (Decision Chain)
-      chain: [],                // [{ decision_id, topic, options, selected, status }]
+      chain: [],                // [{ decision_id, parent_decision_id, topic, options, selected, status }]
+      // 화면 6 → 1: 이어가기로 고른 후속 고민 (체험판에서는 기록만 해요)
+      pending_followup: null,   // { topic, parent_decision_id }
     };
   }
 

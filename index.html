@@ -8,11 +8,18 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/common.css">
+  <!-- 화면별 스타일: 담당자는 자기 화면 파일만 고쳐요 -->
+  <link rel="stylesheet" href="css/screen1.css">
+  <link rel="stylesheet" href="css/screen2.css">
+  <link rel="stylesheet" href="css/screen3.css">
+  <link rel="stylesheet" href="css/screen4.css">
+  <link rel="stylesheet" href="css/screen5.css">
+  <link rel="stylesheet" href="css/screen6.css">
 </head>
 <body>
   <div class="app">
     <header class="app-header">
-      <button type="button" class="back-btn" id="back-btn" hidden>←</button>
+      <button type="button" class="back-btn" id="back-btn" hidden><i data-lucide="arrow-left" aria-hidden="true"></i></button>
       <span class="step-badge" id="step-badge">1</span>
       <h1 class="header-title" id="header-title"></h1>
       <span class="logo">Pick<span class="logo-wise">wise</span></span>
@@ -20,12 +27,15 @@
     <main class="screen" id="screen"></main>
   </div>
 
+  <!-- 라인 아이콘 (Lucide, ISC 라이선스) -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+
   <!-- 공통 (순서 중요: 아래 파일이 위 파일을 사용해요) -->
   <script src="data/samples.js"></script>
   <script src="js/copy.js"></script>
   <script src="js/store.js"></script>
   <script src="js/calc.js"></script>
-  <script src="js/mock-ai.js"></script>
+  <script src="js/sample-data.js"></script>
   <script src="js/ui.js"></script>
 
   <!-- 화면별 파일: 담당자는 자기 화면 파일만 고쳐요 -->
