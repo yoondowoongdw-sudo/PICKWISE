@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pickwise</title>
+  <meta name="description" content="내 기준으로 비교하고, 내가 결정하는 의사결정 도우미">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <button type="button" class="back-btn" id="back-btn" hidden>←</button>
+      <span class="step-badge" id="step-badge">1</span>
+      <h1 class="header-title" id="header-title"></h1>
+      <span class="logo">Pick<span class="logo-wise">wise</span></span>
+    </header>
+    <main class="screen" id="screen"></main>
+  </div>
+
+  <!-- 공통 (순서 중요: 아래 파일이 위 파일을 사용해요) -->
+  <script src="data/samples.js"></script>
+  <script src="js/copy.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/calc.js"></script>
+  <script src="js/mock-ai.js"></script>
+  <script src="js/ui.js"></script>
+
+  <!-- 화면별 파일: 담당자는 자기 화면 파일만 고쳐요 -->
+  <script src="screens/screen1.js"></script>
+  <script src="screens/screen2.js"></script>
+  <script src="screens/screen3.js"></script>
+  <script src="screens/screen4.js"></script>
+  <script src="screens/screen5.js"></script>
+  <script src="screens/screen6.js"></script>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

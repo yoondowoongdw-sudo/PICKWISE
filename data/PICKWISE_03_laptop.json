@@ -1,0 +1,123 @@
+{
+  "schemaVersion": "1.0.0",
+  "appName": "PICKWISE",
+  "locale": "ko-KR",
+  "isSynthetic": true,
+  "decision": {
+    "id": "decision_laptop",
+    "title": "업무용 노트북 선택",
+    "category": "전자기기",
+    "criteria": [
+      {
+        "id": "cost",
+        "label": "가격",
+        "importance": 80,
+        "normalizedWeight": 0.26666666666666666
+      },
+      {
+        "id": "portability",
+        "label": "휴대성",
+        "importance": 90,
+        "normalizedWeight": 0.3
+      },
+      {
+        "id": "battery",
+        "label": "배터리",
+        "importance": 70,
+        "normalizedWeight": 0.23333333333333334
+      },
+      {
+        "id": "performance",
+        "label": "성능",
+        "importance": 40,
+        "normalizedWeight": 0.13333333333333333
+      },
+      {
+        "id": "screen",
+        "label": "화면 크기",
+        "importance": 20,
+        "normalizedWeight": 0.06666666666666667
+      }
+    ],
+    "options": [
+      {
+        "id": "laptop_a",
+        "label": "노트북 A",
+        "facts": {
+          "priceKRW": 1690000,
+          "weightKg": 1.18,
+          "assumedBatteryHours": 17,
+          "ramGB": 16,
+          "screenInches": 14
+        },
+        "scores": {
+          "cost": 80,
+          "portability": 95,
+          "battery": 95,
+          "performance": 80,
+          "screen": 75
+        }
+      },
+      {
+        "id": "laptop_b",
+        "label": "노트북 B",
+        "facts": {
+          "priceKRW": 1990000,
+          "weightKg": 1.42,
+          "assumedBatteryHours": 14,
+          "ramGB": 32,
+          "screenInches": 14
+        },
+        "scores": {
+          "cost": 60,
+          "portability": 75,
+          "battery": 80,
+          "performance": 95,
+          "screen": 75
+        }
+      },
+      {
+        "id": "laptop_c",
+        "label": "노트북 C",
+        "facts": {
+          "priceKRW": 1490000,
+          "weightKg": 1.65,
+          "assumedBatteryHours": 11,
+          "ramGB": 16,
+          "screenInches": 15.6
+        },
+        "scores": {
+          "cost": 95,
+          "portability": 55,
+          "battery": 60,
+          "performance": 75,
+          "screen": 95
+        }
+      }
+    ],
+    "analysis": {
+      "scoringFormula": "sum(score * importance) / sum(importance)",
+      "ranking": [
+        {
+          "optionId": "laptop_a",
+          "totalScore": 87.6667,
+          "displayScore": 88,
+          "rank": 1
+        },
+        {
+          "optionId": "laptop_b",
+          "totalScore": 74.8333,
+          "displayScore": 75,
+          "rank": 2
+        },
+        {
+          "optionId": "laptop_c",
+          "totalScore": 72.1667,
+          "displayScore": 72,
+          "rank": 3
+        }
+      ],
+      "leadingOptionId": "laptop_a"
+    }
+  }
+}

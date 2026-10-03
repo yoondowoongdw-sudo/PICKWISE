@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "1.0.0",
+  "appName": "PICKWISE",
+  "locale": "ko-KR",
+  "isSynthetic": true,
+  "decision": {
+    "id": "decision_travel",
+    "title": "그리스 vs 이집트 여행지 선택",
+    "category": "여행",
+    "criteria": [
+      {
+        "id": "cost",
+        "label": "비용",
+        "importance": 90,
+        "normalizedWeight": 0.3
+      },
+      {
+        "id": "weather",
+        "label": "날씨",
+        "importance": 75,
+        "normalizedWeight": 0.25
+      },
+      {
+        "id": "sightseeing",
+        "label": "관광",
+        "importance": 60,
+        "normalizedWeight": 0.2
+      },
+      {
+        "id": "food",
+        "label": "음식",
+        "importance": 45,
+        "normalizedWeight": 0.15
+      },
+      {
+        "id": "mobility",
+        "label": "이동 편의성",
+        "importance": 30,
+        "normalizedWeight": 0.1
+      }
+    ],
+    "options": [
+      {
+        "id": "greece",
+        "label": "그리스",
+        "scores": {
+          "cost": 70,
+          "weather": 80,
+          "sightseeing": 75,
+          "food": 85,
+          "mobility": 75
+        }
+      },
+      {
+        "id": "egypt",
+        "label": "이집트",
+        "scores": {
+          "cost": 80,
+          "weather": 60,
+          "sightseeing": 72,
+          "food": 62,
+          "mobility": 70
+        }
+      }
+    ],
+    "analysis": {
+      "scoringFormula": "sum(score * importance) / sum(importance)",
+      "ranking": [
+        {
+          "optionId": "greece",
+          "totalScore": 76.25,
+          "displayScore": 76,
+          "rank": 1
+        },
+        {
+          "optionId": "egypt",
+          "totalScore": 69.7,
+          "displayScore": 70,
+          "rank": 2
+        }
+      ],
+      "leadingOptionId": "greece"
+    }
+  }
+}

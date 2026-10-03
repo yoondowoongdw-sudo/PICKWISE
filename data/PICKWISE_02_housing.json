@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "1.0.0",
+  "appName": "PICKWISE",
+  "locale": "ko-KR",
+  "isSynthetic": true,
+  "decision": {
+    "id": "decision_housing",
+    "title": "자취방 선택",
+    "category": "주거",
+    "criteria": [
+      {
+        "id": "cost",
+        "label": "월 주거비",
+        "importance": 90,
+        "normalizedWeight": 0.3
+      },
+      {
+        "id": "commute",
+        "label": "출퇴근 시간",
+        "importance": 90,
+        "normalizedWeight": 0.3
+      },
+      {
+        "id": "space",
+        "label": "공간 크기",
+        "importance": 60,
+        "normalizedWeight": 0.2
+      },
+      {
+        "id": "quiet",
+        "label": "조용함",
+        "importance": 30,
+        "normalizedWeight": 0.1
+      },
+      {
+        "id": "amenities",
+        "label": "생활 편의시설",
+        "importance": 30,
+        "normalizedWeight": 0.1
+      }
+    ],
+    "options": [
+      {
+        "id": "room_a",
+        "label": "원룸 A",
+        "facts": {
+          "monthlyHousingCostKRW": 650000,
+          "oneWayCommuteMinutes": 55,
+          "areaSquareMeters": 26
+        },
+        "scores": {
+          "cost": 90,
+          "commute": 45,
+          "space": 90,
+          "quiet": 70,
+          "amenities": 65
+        }
+      },
+      {
+        "id": "room_b",
+        "label": "원룸 B",
+        "facts": {
+          "monthlyHousingCostKRW": 930000,
+          "oneWayCommuteMinutes": 20,
+          "areaSquareMeters": 23
+        },
+        "scores": {
+          "cost": 60,
+          "commute": 95,
+          "space": 80,
+          "quiet": 75,
+          "amenities": 95
+        }
+      },
+      {
+        "id": "room_c",
+        "label": "원룸 C",
+        "facts": {
+          "monthlyHousingCostKRW": 780000,
+          "oneWayCommuteMinutes": 35,
+          "areaSquareMeters": 17
+        },
+        "scores": {
+          "cost": 75,
+          "commute": 70,
+          "space": 55,
+          "quiet": 90,
+          "amenities": 80
+        }
+      }
+    ],
+    "analysis": {
+      "scoringFormula": "sum(score * importance) / sum(importance)",
+      "ranking": [
+        {
+          "optionId": "room_b",
+          "totalScore": 79.5,
+          "displayScore": 80,
+          "rank": 1
+        },
+        {
+          "optionId": "room_a",
+          "totalScore": 72.0,
+          "displayScore": 72,
+          "rank": 2
+        },
+        {
+          "optionId": "room_c",
+          "totalScore": 71.5,
+          "displayScore": 72,
+          "rank": 3
+        }
+      ],
+      "leadingOptionId": "room_b"
+    }
+  }
+}
