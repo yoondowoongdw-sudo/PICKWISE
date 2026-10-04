@@ -11,6 +11,8 @@
 - **미리보기 서버:** `node tools/serve.js` 실행 후 http://localhost:5173 접속
 - AI 기능을 쓰려면 프로젝트 폴더에 `.env.local` 파일을 만들고 `GEMINI_API_KEY=...`, `TAVILY_API_KEY=...` 를 넣어요 (이 파일은 GitHub에 올라가지 않아요)
 - 배포(Vercel)에서는 Settings → Environments → Production 에 같은 이름으로 Secret 환경 변수를 넣어요
+- **API 키 유출 방지 검사기 켜기 (각자 PC에서 처음 한 번):** Claude Code에 "git config core.hooksPath tools/hooks 실행해줘"
+  → 이후 커밋·푸시 직전에 키나 `.env` 파일이 섞여 있으면 자동으로 중단돼요 (`tools/check-secrets.js`)
 
 ## 폴더 구조
 ```

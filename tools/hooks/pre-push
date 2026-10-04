@@ -1,0 +1,3 @@
+#!/bin/sh
+# GitHub에 올리기 직전 API 키 검사 (tools/check-secrets.js)
+node tools/check-secrets.js all
