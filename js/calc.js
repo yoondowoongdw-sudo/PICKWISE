@@ -57,6 +57,8 @@ Pickwise.calc = {
     const calc = Pickwise.calc;
     const base = calc.ranking(options, scores, importance);
     const winnerId = base[0]?.optionId;
+    // 이미 1·2위 차이가 거의 없으면 '차이가 거의 없어져요' 문장은 의미가 없어서 찾지 않아요
+    const alreadyClose = base.length > 1 && base[0].total - base[1].total < calc.TIE_GAP;
     // 점수가 있는 기준끼리의 반영 비율(%). 정보 부족 기준은 총점에 안 들어가므로 비율에서도 빼요.
     const scored = criteria.filter((c) => options.some((o) => scores[o.id]?.[c.id]?.score != null));
     const pick = (imp) => Object.fromEntries(scored.map((c) => [c.id, imp[c.id] || 0]));
@@ -76,12 +78,13 @@ Pickwise.calc = {
             if (calc.weights(imp) === null) continue;
             const r = calc.ranking(options, scores, imp);
             if (r[0].optionId !== winnerId) { flip = { value: v, option: r[0].label, up: v > current, imp }; break; }
-            if (!close && r.length > 1 && r[0].total - r[1].total < calc.TIE_GAP) close = { value: v, imp, up: v > current };
+            if (!close && !alreadyClose && r.length > 1 && r[0].total - r[1].total < calc.TIE_GAP) close = { value: v, imp, up: v > current };
           }
         }
         const from = ratioOf(c.id, importance);
         if (flip) return { criteria: c, type: 'flip', from, to: ratioOf(c.id, flip.imp), option: flip.option, up: flip.up, distance: Math.abs(flip.value - current) };
-        if (close) return { criteria: c, type: 'close', from, to: ratioOf(c.id, close.imp), up: close.up, distance: Math.abs(close.value - current) };
+        const closeTo = close ? ratioOf(c.id, close.imp) : null;
+        if (close && closeTo !== from) return { criteria: c, type: 'close', from, to: closeTo, up: close.up, distance: Math.abs(close.value - current) };
         return { criteria: c, type: 'stable', from, distance: Infinity };
       })
       .sort((x, y) => x.distance - y.distance);
