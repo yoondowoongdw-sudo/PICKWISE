@@ -29,6 +29,7 @@ window.Pickwise = window.Pickwise || {};
       files: [],                // [{ name, type, size }]
       // 화면 4 결과 → 5: 선택지 x 기준 점수
       scores: {},               // { [optionId]: { [criteriaId]: { score, evidence_type, evidence, sources } } }
+      analysis_key: '',         // 마지막 분석에 쓴 입력 (같으면 다시 분석하지 않아요)
       // 화면 5 → 6
       selected_option: null,    // optionId
       // 화면 6: 결정 기록 (Decision Chain)

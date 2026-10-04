@@ -37,6 +37,11 @@
 .s5-score { font-size: 48px; font-weight: var(--fw-extrabold); line-height: 1; }
 .s5-totals[style*="--cols:3"] .s5-score { font-size: 32px; }
 .s5-totals[style*="--cols:3"] .s5-total { padding: var(--space-3); }
+/* 선택지가 3개 이상이면 카드가 좁아서 이름을 두 줄까지 보여 줘요 */
+.s5-totals[style*="--cols:3"] .s5-name {
+  font-size: var(--fs-body); white-space: normal; word-break: keep-all;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.3; min-height: 2.6em;
+}
 .s5-score small { font-size: 17px; font-weight: var(--fw-bold); margin-left: 2px; }
 .s5-select-hint { margin: calc(var(--space-2) * -1) 0 0; }
 .s5-tie {

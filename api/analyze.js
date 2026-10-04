@@ -184,7 +184,7 @@ module.exports = async function handler(req, res) {
   });
 
   // ③ 점수·근거
-  const result = await gemini(buildPrompt(input, searches, extra), SCHEMA);
+  const result = await gemini(buildPrompt(input, searches, extra), SCHEMA, 0); // 같은 입력이면 같은 점수가 나오도록
   if (result.error) return res.status(200).json({ ok: false, reason: result.error });
 
   const payload = {

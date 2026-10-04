@@ -27,7 +27,8 @@ function parseLoose(text) {
 
 // Gemini 호출 → { value } 또는 { error }
 // schema: 응답 형식 강제 (평평한 구조일수록 실수가 적어요)
-async function gemini(prompt, schema) {
+// temperature: 0 이면 같은 입력에 최대한 같은 답 (점수 분석용), 높을수록 다양한 답 (추천용)
+async function gemini(prompt, schema, temperature = 0.3) {
   if (!process.env.GEMINI_API_KEY) return { error: 'no_key' };
   const once = async () => {
     const ctrl = new AbortController();
@@ -38,7 +39,7 @@ async function gemini(prompt, schema) {
         headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
         body: JSON.stringify({
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          generationConfig: { responseMimeType: 'application/json', responseSchema: schema, temperature: 0.3 },
+          generationConfig: { responseMimeType: 'application/json', responseSchema: schema, temperature },
         }),
         signal: ctrl.signal,
       });

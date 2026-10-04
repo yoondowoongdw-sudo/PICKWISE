@@ -181,8 +181,18 @@ Pickwise.screens[4] = {
 
     // 분석하기: 웹 검색 + AI 점수 (실패하면 입력값은 그대로 두고 이유와 '다시 시도'를 보여 줘요)
     const analyze = async () => {
+      // 입력이 하나도 바뀌지 않았으면 다시 분석하지 않고 이전 결과를 그대로 써요
+      // (웹 검색·AI 답은 매번 조금씩 달라질 수 있어서, 같은 입력에 점수가 바뀌지 않게)
+      const usedQuestions = qState === 'ready' ? s.questions : [];
+      const analysisKey = JSON.stringify([
+        s.decision.topic, s.decision.options.map((o) => [o.id, o.label]), criteria.map((c) => [c.id, c.label]),
+        s.info, usedQuestions.map((q) => [q.id, q.question, (s.context[q.id] || '').trim()]),
+      ]);
+      const hasScores = s.decision.options.every((o) => s.scores[o.id] && criteria.every((c) => s.scores[o.id][c.id]));
+      if (hasScores && s.analysis_key === analysisKey) { ctx.next(); return; }
+
       el.innerHTML = Pickwise.ui.heading(Pickwise.t('screen4.title')) + Pickwise.ui.loading(Pickwise.t('common.loading_analysis'));
-      const res = await Pickwise.ai.analyze(s.decision, criteria, s.info, qState === 'ready' ? s.questions : [], s.context);
+      const res = await Pickwise.ai.analyze(s.decision, criteria, s.info, usedQuestions, s.context);
       if (!ctx.alive()) return;
       if (!res.ok) {
         fileError = '';
@@ -191,6 +201,7 @@ Pickwise.screens[4] = {
         return;
       }
       s.scores = res.scores;
+      s.analysis_key = analysisKey;
       s.selected_option = null;
       ctx.save();
       ctx.next();
