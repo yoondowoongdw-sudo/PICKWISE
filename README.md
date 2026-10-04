@@ -14,6 +14,8 @@
 
 ## 폴더 구조
 ```
+README.md           이 설명서 (사람이 읽는 프로젝트 안내)
+CLAUDE.md           Claude Code 공통 규칙 (대화를 시작할 때마다 자동으로 읽음 — 바꾸기 전에 톡방 공유)
 index.html          앱의 첫 화면 (Vercel이 이 파일을 열어요)
 css/tokens.css      디자인 토큰 — DESIGN.md 3장을 그대로 복사 (직접 고치지 않기)
 css/common.css      공통 레이아웃·버튼·카드·입력창·칩·하단 시트
@@ -23,6 +25,7 @@ js/store.js         화면끼리 주고받는 데이터(state), 브라우저 임
 js/calc.js          반영 비율·총점·민감도·What-if 계산 (AI 아님, 코드 계산)
 js/ai-client.js     화면에서 서버 함수(/api/...)를 부르는 도우미
 api/criteria.js     서버 함수: AI 기준 추천 (화면 2)
+api/questions.js    서버 함수: 화면 4 '더 정확한 비교를 위해 알려 주세요' 질문 만들기 (고른 기준·중요도 기준, 0~3개)
 api/analyze.js      서버 함수: Tavily 웹 검색 + AI 점수·근거·출처 (화면 4→5)
 api/next.js         서버 함수: AI 후속 고민 추천 (화면 6)
 api/_lib/ai.js      서버 함수 공용: Gemini·Tavily 호출, 결과 재사용
