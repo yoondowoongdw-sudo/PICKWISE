@@ -46,9 +46,14 @@ Pickwise.screens[5] = {
         out.push(t('screen5.headline_template', { winner: winner.label }));
       }
       if (behind) out.push(t('screen5.explain_reverse', { criteria: behind.c.label, eun: josa(behind.c.label, '은', '는'), loser: runner.label, ga: josa(runner.label, '이', '가') }));
+      // 앞선 기준 중 AI 추정이 섞여 있으면 확인이 필요하다고 알려요 (기획: 단정하지 않기)
+      const estimated = ahead.filter((x) => sw[x.c.id].evidence_type === 'ai_estimate' || sr[x.c.id].evidence_type === 'ai_estimate');
       if (excluded.length) {
         const names = excluded.map((c) => c.label).join(', ');
-        out.push(t('screen5.explain_missing', { criteria: names, eun: josa(names, '은', '는') }));
+        out.push(t('screen5.explain_missing_ai', { criteria: names, eun: josa(names, '은', '는') }));
+      } else if (estimated.length) {
+        const names = estimated.map((x) => x.c.label).join('과 ');
+        out.push(t('screen5.explain_estimate', { criteria: names, eun: josa(names, '은', '는') }));
       } else {
         out.push(t('screen5.change_notice'));
       }
@@ -62,12 +67,23 @@ Pickwise.screens[5] = {
       return t('screen5.sensitivity_stable_template', v);
     };
 
+    // 기준별 근거 배지 (글자로 구분): AI 추정이 하나라도 있으면 AI 추정, 웹 검색, 사용자 입력 순
+    const typesOf = (c) => options.map((o) => s.scores[o.id][c.id]?.evidence_type || 'none');
     const badgeFor = (c) => {
-      const hasScore = options.some((o) => s.scores[o.id][c.id]?.score != null);
-      return hasScore
-        ? `<span class="badge badge-outline">${e(t('screen5.badge_sample'))}</span>`
-        : `<span class="badge badge-ai">${e(t('screen5.no_info_label'))}</span>`;
+      const types = typesOf(c);
+      if (types.every((x) => x === 'none')) return `<span class="badge badge-ai">${e(t('screen5.no_info_label'))}</span>`;
+      if (types.includes('ai_estimate')) return `<span class="badge badge-ai">${e(t('screen5.badge_ai'))}</span>`;
+      if (types.includes('web_search')) return `<span class="badge badge-outline">${e(t('screen5.badge_web'))}</span>`;
+      return `<span class="badge badge-outline">${e(t('screen5.badge_user'))}</span>`;
     };
+    const typeLabel = { user_input: 'screen5.badge_user', web_search: 'screen5.badge_web', ai_estimate: 'screen5.badge_ai' };
+    // 출처 링크: 서버가 검색 결과에서 확인한 주소만 와요. 새 탭으로 열고, 사이트 이름(도메인)을 함께 보여 줘요
+    const sourceLinks = (sources) => (sources && sources.length ? `<span class="s5-sources">${e(t('screen5.sources_label'))}:
+      ${sources.map((src) => {
+        let host = '';
+        try { host = new URL(src.url).hostname.replace(/^www\.|^m\./, ''); } catch (_) { return ''; }
+        return `<a href="${e(src.url)}" target="_blank" rel="noopener noreferrer">${e(src.title || host)} <span class="s5-host">(${e(host)})</span> ↗</a>`;
+      }).join('')}</span>` : '');
 
     el.innerHTML = `
       ${Pickwise.ui.heading(t('screen5.title'), t('screen5.subtitle'))}
@@ -89,7 +105,7 @@ Pickwise.screens[5] = {
       <!-- 결과 설명 -->
       <h3 class="block-title">${e(t('screen5.section_ai'))}</h3>
       <section class="s5-explain-box">
-        <p class="s5-explain-label">${e(t('screen5.ai_explain_label', { winner: winner.label }))}</p>
+        <p class="s5-explain-label">${e(t('screen5.ai_explain_label', { winner: winner.label, ga: josa(winner.label, '이', '가') }))}</p>
         <p class="s5-explain">${e(explain)}</p>
       </section>
 
@@ -129,7 +145,9 @@ Pickwise.screens[5] = {
                   const cell = s.scores[r.optionId][c.id];
                   return cell?.score == null
                     ? `<p>${e(r.label)} · ${e(t('screen5.no_info_label'))}</p>`
-                    : `<p>${e(r.label)} ${cell.score}${e(unit)} — ${e(t('screen5.evidence_label'))}: ${e(cell.evidence)}</p>`;
+                    : `<p>${e(r.label)} ${cell.score}${e(unit)} — ${e(t('screen5.evidence_label'))}: ${e(cell.evidence)}
+                        <span class="s5-ev-meta">(${e(t(typeLabel[cell.evidence_type] || 'screen5.badge_ai'))}${cell.confidence ? ' · ' + e(t('screen5.confidence_' + cell.confidence)) : ''})</span>
+                        ${sourceLinks(cell.sources)}</p>`;
                 }).join('')}
                 ${weights[c.id] != null ? `<p class="caption">반영 비율 ${Math.round(weights[c.id])}%</p>` : ''}
               </div>
@@ -156,7 +174,7 @@ Pickwise.screens[5] = {
       </div>
       <p class="s5-wi-result" id="s5-wi-result" aria-live="polite" hidden></p>` : ''}
 
-      <p class="notice">${e(t('screen5.disclaimer'))}<br>${e(t('common.demo_notice'))}</p>
+      <p class="notice">${e(t('screen5.disclaimer'))}<br>${e(t('screen5.ai_notice'))}</p>
 
       ${Pickwise.ui.footer({ label: t('screen5.select_option_cta') })}
     `;
@@ -207,7 +225,7 @@ Pickwise.screens[5] = {
       const node = {
         decision_id: s.decision.id,
         parent_decision_id: s.decision.parent_decision_id,
-        title: s.decision.title,
+        title: s.decision.topic,
         topic: s.decision.topic,
         options: options.map((o) => o.label),
         selected: selected.label,

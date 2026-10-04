@@ -1,21 +1,31 @@
 // 화면 2. 기준 선택 (DESIGN.md 8장 screen2_criteria)
 // 받는 값: state.decision  →  넘기는 값: state.criteria[] (selected: true 인 것이 선택된 기준)
+// 처음 들어오면 AI(/api/criteria)가 주제에 맞는 기준을 추천해요.
 Pickwise.screens[2] = {
   async render(el, ctx) {
     const { escape: e, icon } = Pickwise.ui;
     const s = ctx.state;
     const MAX = 8;
     const MAX_NAME = 12;
-    if (!s.decision.sample_id) return ctx.go(1);
+    if (!s.decision.topic || s.decision.options.filter((o) => o.label).length < 2) return ctx.go(1);
 
-    // 처음 들어오면 예시 기준을 불러와요
-    if (s.criteria.length === 0) {
+    // 처음 들어오면 AI 기준 추천을 받아요. 실패하면 이유와 '다시 시도' 버튼 (직접 추가는 언제든 가능)
+    let aiError = '';
+    const loadCriteria = async () => {
       el.innerHTML = Pickwise.ui.heading(Pickwise.t('screen2.title')) + Pickwise.ui.loading(Pickwise.t('common.loading_criteria'));
-      await Pickwise.ui.wait(400);
-      if (!ctx.alive()) return;
-      s.criteria = Pickwise.samples.criteria(s.decision.sample_id);
-      ctx.save();
-    }
+      const res = await Pickwise.ai.criteria(s.decision);
+      if (!ctx.alive()) return false;
+      if (res.ok) {
+        s.criteria = res.criteria.map((c) => ({ id: c.id, label: c.label, icon: c.icon, source: 'ai', selected: c.default_selected }));
+        s.criteria_extra = res.extra.map((c) => ({ id: c.id, label: c.label, icon: c.icon }));
+        aiError = '';
+        ctx.save();
+      } else {
+        aiError = Pickwise.ai.errorText(res.reason);
+      }
+      return true;
+    };
+    if (s.criteria.length === 0 && !(await loadCriteria())) return;
 
     let adding = false;   // '+ 직접 추가' 입력창이 열려 있는지
     let message = '';     // 추가·선택 오류 안내
@@ -35,12 +45,14 @@ Pickwise.screens[2] = {
 
     const draw = (focusSelector) => {
       const selected = selectedCount();
-      const extras = Pickwise.samples.extraCriteria(s.decision.sample_id).filter((x) => !exists(x.label));
-      const unselectedSample = s.criteria.filter((c) => !c.selected && c.source === 'sample');
+      const extras = (s.criteria_extra || []).filter((x) => !exists(x.label));
+      const unselectedSample = s.criteria.filter((c) => !c.selected && c.source === 'ai');
       const showBanner = !bannerClosed && selected > 0 && selected <= 2 && unselectedSample.length > 0;
 
       el.innerHTML = `
         ${Pickwise.ui.heading(Pickwise.t('screen2.title'), Pickwise.t('screen2.subtitle'))}
+        ${aiError ? `<div class="s2-ai-error" role="alert"><p class="error-text">${icon('circle-alert', 14)} ${e(aiError)}</p>
+          <button type="button" class="btn btn-secondary" id="s2-retry">${e(Pickwise.t('common.retry'))}</button></div>` : ''}
 
         <div class="s2-grid">
           ${s.criteria.map((c) => `
@@ -82,7 +94,6 @@ Pickwise.screens[2] = {
             <div class="s2-chips">
               ${extras.map((x) => `<button type="button" class="chip" data-extra="${e(x.id)}" aria-label="${e(Pickwise.t('screen2.add_criteria_chip_aria', { criteria: x.label }))}"><span class="chip-plus">+</span> ${e(x.label)}</button>`).join('')}
             </div>
-            <p class="caption">${e(Pickwise.t('screen2.extra_notice'))}</p>
           </section>` : ''}
 
         ${Pickwise.ui.footer({ disabled: selected < 1, reason: Pickwise.t('screen2.error_min') })}
@@ -117,10 +128,15 @@ Pickwise.screens[2] = {
 
       // '이런 기준도 고려해보세요' 칩
       el.querySelectorAll('[data-extra]').forEach((btn) => btn.addEventListener('click', () => {
-        const x = Pickwise.samples.extraCriteria(s.decision.sample_id).find((v) => v.id === btn.dataset.extra);
-        addCriteria(x);
+        const x = s.criteria_extra.find((v) => v.id === btn.dataset.extra);
+        addCriteria({ ...x, source: 'extra' });
         draw();
       }));
+
+      // AI 추천 다시 시도
+      el.querySelector('#s2-retry')?.addEventListener('click', async () => {
+        if (await loadCriteria()) draw();
+      });
 
       // '+ 직접 추가'
       el.querySelector('#s2-add-open')?.addEventListener('click', () => { adding = true; message = ''; draw('#s2-add-input'); });

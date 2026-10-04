@@ -61,3 +61,4 @@
   display: grid; place-items: center;
 }
 .s2-warn { color: var(--color-warn-text); }
+.s2-ai-error { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3); border-radius: var(--radius-control); background: var(--color-surface); border: 1px solid var(--color-error); }

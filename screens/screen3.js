@@ -6,9 +6,12 @@ Pickwise.screens[3] = {
     const { escape: e, icon } = Pickwise.ui;
     const s = ctx.state;
     const criteria = Pickwise.store.selectedCriteria();
-    if (criteria.length === 0) return ctx.go(s.decision.sample_id ? 2 : 1);
+    if (criteria.length === 0) return ctx.go(2);
 
     // 남은 기준은 값 유지, 새 기준은 50, 빠진 기준은 지워요 (DESIGN.md 공통 정책)
+    // 주황 채움이 핸들(20px) 가운데에서 끝나도록: 왼쪽 끝 10px ~ 오른쪽 끝 10px 사이를 값만큼
+    const fillAt = (v) => `calc(10px + (100% - 20px) * ${v / 100})`;
+
     const importance = {};
     criteria.forEach((c) => { importance[c.id] = s.importance[c.id] ?? 50; });
     s.importance = importance;
@@ -25,7 +28,7 @@ Pickwise.screens[3] = {
           <div class="s3-row" data-id="${e(c.id)}">
             <div class="s3-line">
               <span class="s3-name">${icon(c.icon, 24)}<span>${e(c.label)}</span></span>
-              <input type="range" class="s3-slider" min="0" max="100" step="1" value="${v}" aria-label="${aria}" style="--fill:${v}%">
+              <input type="range" class="s3-slider" min="0" max="100" step="1" value="${v}" aria-label="${aria}" style="--fill:${fillAt(v)}">
               <input type="number" class="s3-number num" min="0" max="100" step="1" value="${v}" aria-label="${aria}">
             </div>
             <p class="caption s3-zero" ${v === 0 ? '' : 'hidden'}>${e(Pickwise.t('screen3.zero_weight_notice'))}</p>
@@ -50,7 +53,7 @@ Pickwise.screens[3] = {
       const slider = row.querySelector('.s3-slider');
       const number = row.querySelector('.s3-number');
       slider.value = v;
-      slider.style.setProperty('--fill', v + '%');
+      slider.style.setProperty('--fill', fillAt(v));
       if (document.activeElement !== number) number.value = v;
       row.querySelector('.s3-zero').hidden = v !== 0;
       const allZero = Pickwise.calc.weights(s.importance) === null;

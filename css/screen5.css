@@ -86,6 +86,10 @@
 .s5-ev-name { font-size: 15px; }
 .s5-ev-body { padding: 0 0 var(--space-3); display: flex; flex-direction: column; gap: 2px; }
 .s5-ev-body p { margin: 0; font-size: var(--fs-body); color: var(--color-text-sub); }
+.s5-ev-meta { font-size: var(--fs-caption); }
+.s5-sources { display: flex; flex-wrap: wrap; gap: 2px var(--space-2); margin-top: 2px; font-size: var(--fs-caption); }
+.s5-sources a { color: var(--color-primary-ink); text-decoration: underline; text-underline-offset: 2px; word-break: break-all; }
+.s5-host { color: var(--color-text-sub); }
 
 /* 민감도 분석: 흰 카드 안에 줄로 구분 */
 .s5-sens { padding: var(--space-2) var(--space-6); }

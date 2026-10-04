@@ -1,46 +1,42 @@
 // 화면 1. 결정 입력 (DESIGN.md 8장 screen1_decision, 목업 1페이지)
-// 체험판: 예시(data/samples.js) 중 하나로 시작해요. 처음에는 여행 예시가 채워져 있고,
-//         주제·선택지 이름은 바꿀 수 있어요. 선택지는 예시에 있는 것만 지우거나 다시 추가할 수 있어요.
-// 넘기는 값: state.decision.{ sample_id, title, topic, category, options[] }
+// 사용자가 결정 주제와 선택지(2~5개)를 직접 입력해요.
+// 넘기는 값: state.decision.{ topic, options[] }
 Pickwise.screens[1] = {
   render(el, ctx) {
     const { escape: e, icon, optCircle } = Pickwise.ui;
     const s = ctx.state;
     const d = s.decision;
-    const samples = Pickwise.samples.list();
     const LETTERS = 'ABCDE';
+    const MAX = 5;
+    const placeholders = Pickwise.copy.screen1.placeholder_options;
+    let message = ''; // 선택지 추가·삭제를 할 수 없을 때 안내
 
-    const loadSample = (id) => {
-      const picked = samples.find((x) => x.id === id);
-      // 다른 예시를 고르면 뒤 단계 값은 새로 시작해요 (DESIGN.md 공통 정책)
-      Object.assign(d, { sample_id: id, title: picked.title, topic: picked.topic, category: picked.category, options: picked.options.map((o) => ({ ...o })) });
+    // 선택지가 바뀌면 뒤 단계(기준 추천·분석)는 새로 해요 (DESIGN.md 공통 정책)
+    const optionsChanged = () => {
       s.criteria = [];
+      s.criteria_extra = [];
       s.importance = {};
-      s.info = {};
-      s.files = [];
+      s.context = {};
+      s.questions = [];
+      s.questions_key = '';
       s.scores = {};
       s.selected_option = null;
       ctx.save();
     };
-    if (!d.sample_id) loadSample(samples[0].id);
+    // 이름만 바뀌어도 기준 추천·분석은 다시 해요 (다음 화면으로 넘어갈 때 확인)
+    const signature = () => JSON.stringify([d.topic.trim(), d.options.map((o) => o.label.trim())]);
+    const before = signature();
 
-    // 선택지가 바뀌면 계산 결과는 다시 만들어요
-    const optionsChanged = () => { s.scores = {}; s.selected_option = null; ctx.save(); };
-    const removedOptions = () => {
-      const all = samples.find((x) => x.id === d.sample_id).options;
-      return all.filter((o) => !d.options.some((x) => x.id === o.id));
-    };
     const problem = () => {
       if (!d.topic.trim()) return Pickwise.t('screen1.error_empty_topic');
       if (d.options.length < 2) return Pickwise.t('screen1.error_min_options');
       if (d.options.some((o) => !o.label.trim())) return Pickwise.t('screen1.error_empty_option');
+      const names = d.options.map((o) => o.label.trim().replace(/\s/g, ''));
+      if (new Set(names).size !== names.length) return Pickwise.t('screen1.error_duplicate_option');
       return '';
     };
 
-    let message = ''; // 선택지 추가·삭제를 할 수 없을 때 안내
-
     const draw = (focusSelector) => {
-      const canAdd = removedOptions().length > 0;
       const why = problem();
       el.innerHTML = `
         <section class="s1-hero">
@@ -50,15 +46,11 @@ Pickwise.screens[1] = {
             <p class="s1-hero-sub">${e(Pickwise.t('screen1.subtitle'))}</p>
           </div>
         </section>
-        ${s.pending_followup ? `<p class="s1-followup">${e(Pickwise.t('screen1.continue_notice', { topic: s.pending_followup.topic, eun: Pickwise.josa(s.pending_followup.topic, '은', '는') }))}</p>` : ''}
+        ${s.pending_followup ? `<p class="s1-followup">${e(Pickwise.t(s.pending_followup.ai_filled === false ? 'screen1.continue_notice_custom' : 'screen1.continue_notice', { topic: s.pending_followup.topic }))}</p>` : ''}
 
         <section class="s1-card">
           <h3 class="s1-card-title"><span class="s1-step">1</span><label for="s1-topic">${e(Pickwise.t('screen1.label_topic'))}</label></h3>
           <input class="input" id="s1-topic" maxlength="40" value="${e(d.topic)}" placeholder="${e(Pickwise.t('screen1.placeholder_topic'))}">
-          <div class="s1-samples" role="group" aria-label="${e(Pickwise.t('screen1.sample_label'))}">
-            <span class="caption">${e(Pickwise.t('screen1.sample_label'))}</span>
-            ${samples.map((x) => `<button type="button" class="s1-sample" data-id="${e(x.id)}" aria-pressed="${x.id === d.sample_id}">${e(x.chip)}</button>`).join('')}
-          </div>
         </section>
 
         <section class="s1-card">
@@ -68,17 +60,17 @@ Pickwise.screens[1] = {
               <li class="s1-option opt-${i}">
                 ${optCircle(i, LETTERS[i])}
                 <input class="input s1-opt-input" data-id="${e(o.id)}" maxlength="30" value="${e(o.label)}"
-                  placeholder="${e(Pickwise.t('screen1.placeholder_option', { letter: LETTERS[i] }))}"
+                  placeholder="${e(placeholders[i] || Pickwise.t('screen1.placeholder_option', { letter: LETTERS[i] }))}"
                   aria-label="${e(Pickwise.t('screen1.placeholder_option', { letter: LETTERS[i] }))}">
                 <button type="button" class="s1-remove" data-id="${e(o.id)}" ${d.options.length <= 2 ? 'aria-disabled="true"' : ''}
                   aria-label="${e(Pickwise.t('screen1.remove_option_aria', { option: o.label || LETTERS[i] }))}">${icon('x', 22)}</button>
               </li>`).join('')}
           </ul>
-          <button type="button" class="btn btn-outline-primary s1-add" id="s1-add" ${canAdd ? '' : 'aria-disabled="true"'}>${e(Pickwise.t('screen1.add_option'))}</button>
+          <button type="button" class="btn btn-outline-primary s1-add" id="s1-add" ${d.options.length >= MAX ? 'aria-disabled="true"' : ''}>${e(Pickwise.t('screen1.add_option'))}</button>
           ${message ? `<p class="error-text" role="alert">${e(message)}</p>` : ''}
         </section>
 
-        <p class="notice">${e(Pickwise.t('common.privacy_notice'))}<br>${e(Pickwise.t('screen1.demo_scope'))}</p>
+        <p class="notice">${e(Pickwise.t('common.privacy_notice'))}</p>
         ${Pickwise.ui.footer({ disabled: !!why, reason: why })}
       `;
 
@@ -114,21 +106,18 @@ Pickwise.screens[1] = {
         draw('#s1-add');
       }));
       el.querySelector('#s1-add').addEventListener('click', () => {
-        const back = removedOptions()[0];
-        if (!back) { message = Pickwise.t('screen1.add_option_disabled'); return draw('#s1-add'); }
+        if (d.options.length >= MAX) { message = Pickwise.t('screen1.error_max_options'); return draw('#s1-add'); }
         message = '';
-        d.options.push({ ...back });
+        const id = 'opt_' + Date.now();
+        d.options.push({ id, label: '' });
         optionsChanged();
-        draw(`.s1-opt-input[data-id="${back.id}"]`);
+        draw(`.s1-opt-input[data-id="${id}"]`);
       });
-      el.querySelectorAll('.s1-sample').forEach((btn) => btn.addEventListener('click', () => {
-        if (btn.dataset.id === d.sample_id) return;
-        loadSample(btn.dataset.id);
-        draw(`.s1-sample[data-id="${btn.dataset.id}"]`);
-      }));
       nextBtn.addEventListener('click', () => {
         d.topic = d.topic.trim();
         d.options.forEach((o) => { o.label = o.label.trim(); });
+        if (signature() !== before) optionsChanged();
+        s.pending_followup = null;
         ctx.save();
         ctx.next();
       });

@@ -3,29 +3,32 @@
 window.Pickwise = window.Pickwise || {};
 
 (function () {
-  const KEY = 'pickwise:v1';
+  const KEY = 'pickwise:v2'; // 저장 형식이 바뀌면 숫자를 올려요 (예전 예시 데이터 버전 기록은 무시)
 
   function emptyState() {
     return {
       // 화면 1 → 2: 결정 주제와 선택지
       decision: {
         id: 'decision_' + Date.now(),
-        sample_id: null,        // 고른 예시 (data/samples.js 의 id)
-        title: '',              // 결정 기록에 쓰는 짧은 제목 (예: 여행지 결정)
         topic: '',
         category: '',
-        options: [],            // [{ id, label }]
+        options: [{ id: 'opt_1', label: '' }, { id: 'opt_2', label: '' }], // [{ id, label }] — 처음엔 빈칸 2개
         parent_decision_id: null,
       },
       // 화면 2 → 3: 기준 후보 전체 (selected 가 true 인 것만 다음 단계에서 사용)
-      criteria: [],             // [{ id, label, icon, source: 'ai' | 'user', selected }]
+      criteria: [],             // [{ id, label, icon, source: 'ai' | 'extra' | 'user', selected }]
+      criteria_extra: [],       // '이런 기준도 고려해보세요' 칩 [{ id, label, icon }]
       // 화면 3 → 4: 기준별 중요도 0~100 (기본 50)
       importance: {},           // { [criteriaId]: number }
       // 화면 4 → 5: 사용자가 입력한 정보와 첨부 파일
       info: {},                 // { [optionId]: string }
+      // 화면 4 '더 정확한 비교를 위해 알려 주세요': AI가 선택 기준·중요도를 보고 만든 질문과 사용자 답
+      questions: [],            // [{ id, criterion_id, question, placeholder, search }]
+      questions_key: '',        // 질문을 만든 기준·중요도 (바뀌면 질문을 다시 만들어요)
+      context: {},              // { [questionId]: string } 사용자 답 (예: 집 지역, 예산)
       files: [],                // [{ name, type, size }]
       // 화면 4 결과 → 5: 선택지 x 기준 점수
-      scores: {},               // { [optionId]: { [criteriaId]: { score, evidence_type, evidence } } }
+      scores: {},               // { [optionId]: { [criteriaId]: { score, evidence_type, evidence, sources } } }
       // 화면 5 → 6
       selected_option: null,    // optionId
       // 화면 6: 결정 기록 (Decision Chain)

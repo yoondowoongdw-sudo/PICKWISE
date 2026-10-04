@@ -28,6 +28,8 @@
 .s6-status-pending { color: var(--color-warn-text); }
 .s6-status-recheck { color: var(--color-error-ink); }
 
+.s6-ai-error { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3); border-radius: var(--radius-control); background: var(--color-surface); border: 1px solid var(--color-error); }
+
 /* 추천 고민 카드 */
 .s6-list { display: flex; flex-direction: column; gap: var(--space-3); }
 .s6-card { align-items: flex-start; padding: var(--space-4) var(--space-6); border-color: var(--color-line); box-shadow: var(--shadow-card); }

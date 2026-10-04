@@ -1,5 +1,4 @@
 // 화면 문구 (DESIGN.md 12장 부록 A 기반).
-// 체험판(예시 데이터) 버전이라 'AI가 추천' 같은 표현은 실제 동작에 맞게 바꿨어요. 바꾼 줄에는 [체험판] 표시를 했어요.
 // 사용법: Pickwise.t('screen1.title')  /  Pickwise.t('screen5.headline_template', { winner: '그리스' })
 window.Pickwise = window.Pickwise || {};
 
@@ -8,12 +7,15 @@ Pickwise.copy = {
     logo: 'Pickwise',
     next: '다음',
     back: '이전',
-    loading_criteria: '기준을 정리하고 있어요…', // [체험판]
-    loading_analysis: '점수를 계산하고 있어요…',
+    retry: '다시 시도',
+    loading_criteria: 'AI가 기준을 정리하고 있어요…',
+    loading_analysis: '웹에서 정보를 찾고 점수를 계산하고 있어요… (10~20초)',
+    loading_next: 'AI가 이어서 고민할 거리를 찾고 있어요…',
     error_generic: '잠시 문제가 생겼어요. 다시 시도해 주세요.',
+    error_busy: '지금 AI 사용량이 많아요. 잠시 후 다시 시도해 주세요.',
+    error_no_ai: 'AI에 연결할 수 없어요. 배포된 주소로 접속했는지 확인해 주세요.',
     empty_history: '아직 저장된 결정이 없어요.',
     privacy_notice: '실제 개인정보나 사내 정보는 입력하지 마세요.',
-    demo_notice: '체험판이에요. 외부 AI 없이 미리 준비한 예시 데이터로 계산해요.', // [체험판]
     status_done: '결정 완료',
     status_pending: '결정 중',
     status_recheck: '다시 확인 필요',
@@ -24,27 +26,27 @@ Pickwise.copy = {
     title: '어떤 결정이 고민되세요?',
     title_lead: '어떤 결정이',
     title_em: '고민되세요?',
-    subtitle: '비교하고 싶은 주제와 선택지를 입력하면 더 나은 선택을 도와드려요.', // [체험판] 'AI가' 삭제
+    subtitle: '비교하고 싶은 주제와 선택지를 입력하면 AI가 더 나은 선택을 도와드려요.',
     label_topic: '결정 주제 입력',
     label_options: '선택지 입력',
     placeholder_topic: '예) 그리스 vs 이집트 어디로 갈지',
+    placeholder_options: ['예) 그리스', '예) 이집트', '선택지 C', '선택지 D', '선택지 E'],
     placeholder_option: '선택지 {letter}',
     add_option: '+ 선택지 추가',
     remove_option_aria: '{option} 삭제',
     error_min_options: '비교하려면 선택지가 2개 이상 필요해요.',
-    error_empty_option: '선택지 이름을 입력해 주세요.',
+    error_max_options: '선택지는 5개까지 비교할 수 있어요.',
+    error_empty_option: '선택지 이름을 모두 입력해 주세요.',
     error_empty_topic: '결정 주제를 입력해 주세요.',
-    sample_label: '예시로 시작하기', // [체험판]
-    demo_scope: '체험판은 예시 3가지만 비교할 수 있어요. 주제와 선택지 이름은 바꿀 수 있어요.', // [체험판]
-    add_option_disabled: '체험판에서는 예시에 있는 선택지만 다시 추가할 수 있어요.', // [체험판]
-    continue_notice: "이어서 고민 중인 '{topic}'{eun} 결정 기록에 저장해 뒀어요. 체험판에서는 아래 예시로 비교를 이어가요.", // [체험판] {eun}: 은/는
+    error_duplicate_option: '같은 이름의 선택지가 있어요.',
+    continue_notice: "AI가 '{topic}'의 주제와 선택지를 추천해 채워 뒀어요. 자유롭게 고쳐도 돼요.",
+    continue_notice_custom: "'{topic}' 고민을 이어서 비교해 보세요. 선택지를 입력해 주세요.", // 직접 입력한 후속 고민 (AI 추천 아님)
   },
   screen2: {
     header: '기준 선택',
     title: '어떤 기준으로 비교할까요?',
-    subtitle: '추천 기준을 고르거나 직접 추가해 보세요.', // [체험판] 'AI가 추천한' → '추천'
+    subtitle: 'AI가 추천한 기준을 고르거나 직접 추가해 보세요.',
     ai_extra_title: '이런 기준도 고려해보세요',
-    extra_notice: '예시 데이터에 점수가 없는 기준은 결과에서 정보 부족으로 표시돼요.', // [체험판]
     add_criteria: '+ 직접 추가',
     add_confirm: '추가',
     cancel: '취소',
@@ -71,8 +73,15 @@ Pickwise.copy = {
   screen4: {
     header: '정보 입력',
     title: '선택지에 대해 알고 있는 내용을 입력해 주세요.',
-    subtitle: '적어 둔 메모는 결정 기록과 함께 저장돼요.', // [체험판]
-    demo_info_notice: '체험판에서는 입력한 내용과 첨부 자료가 점수에 반영되지 않아요. 점수는 예시 데이터 값을 써요.', // [체험판]
+    subtitle: '정보가 많을수록 더 정확하게 비교할 수 있어요.',
+    ai_info_notice: '입력한 내용은 AI 분석에 쓰이고, 부족한 정보는 AI가 웹에서 찾아 보완해요. 첨부 파일 내용은 아직 분석하지 않아요.',
+    context_title: '더 정확한 비교를 위해 알려 주세요',
+    context_badge: '권장',
+    context_desc: '아래 기준은 내 상황에 따라 결과가 달라져요. 입력하지 않으면 일반적인 경우로 추정해요.',
+    context_privacy: '정확한 주소 대신 "서울 마포구"처럼 대략적으로 적어 주세요.',
+    context_missing: '{list} 정보를 입력하면 결과가 더 정확해져요.',
+    context_loading: 'AI가 고른 기준을 보고 필요한 정보를 확인하고 있어요…',
+    context_error: '추가 질문을 불러오지 못했어요. 없어도 분석은 할 수 있어요.',
     label_option_info: '{option}에 대해 알고 있는 내용',
     placeholder_option_info: '예) {option}에 대해 알고 있는 점이나 마음에 드는 이유를 적어 주세요.',
     attach_title: '자료 첨부 (선택사항)',
@@ -104,10 +113,16 @@ Pickwise.copy = {
     explain_lead: '{winner}{eun} {list} 기준에서 {loser}보다 크게 앞서 총점이 더 높게 계산되었어요.',
     explain_item: '{criteria}({a}점 vs {b}점)',
     explain_reverse: '{criteria}{eun} {loser}{ga} 더 높아요.',
-    explain_missing: '{criteria}{eun} 예시 데이터에 점수가 없어 계산에서 빠졌어요.',
+    explain_missing_ai: '{criteria}{eun} AI도 근거를 찾지 못해 계산에서 빠졌어요.',
+    explain_estimate: '{criteria}{eun} AI 추정이라 추가 확인이 필요해요.',
+    ai_notice: '점수는 AI(Gemini)가 입력한 내용과 웹 검색 결과(Tavily)를 바탕으로 제안한 값이에요. 실제 정보와 다를 수 있으니 출처를 직접 확인해 주세요.',
+    sources_label: '출처',
+    confidence_low: '신뢰도 낮음',
+    confidence_medium: '신뢰도 보통',
+    confidence_high: '신뢰도 높음',
     section_compare: '기준별 비교',
-    section_ai: '결과 설명', // [체험판]
-    ai_explain_label: '결과 설명 · {winner}가 앞선 이유', // [체험판]
+    section_ai: 'AI 설명',
+    ai_explain_label: 'AI 설명 · {winner}{ga} 앞선 이유', // {ga}: 이/가
     section_evidence: '기준별 근거',
     section_sensitivity: '민감도 분석',
     section_whatif: 'What-if 분석',
@@ -115,14 +130,14 @@ Pickwise.copy = {
     gap_template: "가장 큰 차이를 만든 기준은 '{criteria}'{ieyo}.", // {ieyo}: 받침에 따라 이에요/예요
     second_template: '{option}은(는) {score}점이에요.',
     change_notice: '중요도를 바꾸면 결과가 달라질 수 있어요.',
-    badge_sample: '예시 데이터', // [체험판]
     badge_user: '사용자 입력',
+    badge_web: '웹 검색',
     badge_file: '첨부 자료',
+    badge_ai: 'AI 추정 · 추가 확인 권장',
     disclaimer: '이 결과는 입력한 정보와 중요도를 기준으로 한 계산이며, 최종 결정은 사용자가 내려요.',
     tie_notice: '두 선택지의 점수 차이가 거의 없어요. 중요도를 다시 확인해 보세요.',
     evidence_label: '근거',
     no_info_label: '정보 부족',
-    excluded_notice: "'{criteria}'은(는) 예시 데이터에 점수가 없어 총점에서 제외했어요. 정보를 입력해도 체험판에서는 반영되지 않아요.", // [체험판]
     sensitivity_flip_template: "'{criteria}'의 중요도를 현재 {from}%에서 {to}% 이상으로 높이면 {option}의 총점이 더 높아져요.",
     sensitivity_flip_down_template: "'{criteria}'의 중요도를 현재 {from}%에서 {to}% 이하로 낮추면 {option}의 총점이 더 높아져요.",
     sensitivity_close_template: "'{criteria}'의 중요도를 {from}%에서 {to}%로 높이면 두 선택지의 차이가 거의 없어져요.",
@@ -140,7 +155,8 @@ Pickwise.copy = {
   screen6: {
     header: '다음 결정',
     title: '이 결정 다음에도 고민할 게 있나요?',
-    ai_recommend: '추천', // [체험판] 'AI 추천' → '추천'
+    ai_recommend: 'AI 추천',
+    ai_failed: 'AI 추천을 불러오지 못했어요. 직접 입력하거나 다시 시도해 주세요.',
     custom_input: '+ 새로운 고민 직접 입력',
     placeholder_custom: '예) 어떤 숙소가 좋을까?',
     start_new: '새 결정 시작하기',

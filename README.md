@@ -4,13 +4,13 @@
 
 삼일 연수 A-4조 웹앱. 바닐라 HTML·CSS·JS로 만든 정적 사이트이고, GitHub main에 올리면 Vercel이 자동으로 배포해요.
 
-> **체험판(예시 데이터 버전)** — 외부 AI를 호출하지 않아요. 사용자는 예시 고민 3가지(여행·자취방·노트북) 중 하나를 골라 비교해요.
-> 점수는 콘텐츠팀 예시 데이터 값이고, 예시에 없는 기준은 지어내지 않고 '정보 부족'으로 표시해요.
-> 총점·민감도·What-if 는 모두 코드가 계산해요(`js/calc.js`).
+> **AI 버전** — 사용자가 고민을 직접 입력하면 AI(Gemini)가 기준을 추천하고, Tavily 웹 검색으로 부족한 정보를 보완해 기준별 점수·근거·출처를 제시해요.
+> 총점·민감도·What-if 는 AI가 아니라 코드가 계산해요(`js/calc.js`). API 키는 서버(Vercel 환경 변수)에만 있어요.
 
 ## 실행 방법
-- **가장 간단하게:** `index.html`을 더블클릭해서 브라우저로 열어요.
 - **미리보기 서버:** `node tools/serve.js` 실행 후 http://localhost:5173 접속
+- AI 기능을 쓰려면 프로젝트 폴더에 `.env.local` 파일을 만들고 `GEMINI_API_KEY=...`, `TAVILY_API_KEY=...` 를 넣어요 (이 파일은 GitHub에 올라가지 않아요)
+- 배포(Vercel)에서는 Settings → Environments → Production 에 같은 이름으로 Secret 환경 변수를 넣어요
 
 ## 폴더 구조
 ```
@@ -18,15 +18,18 @@ index.html          앱의 첫 화면 (Vercel이 이 파일을 열어요)
 css/tokens.css      디자인 토큰 — DESIGN.md 3장을 그대로 복사 (직접 고치지 않기)
 css/common.css      공통 레이아웃·버튼·카드·입력창·칩·하단 시트
 css/screen1~6.css   화면별 스타일 — 담당자는 자기 파일만 고쳐요
-js/copy.js          화면 문구 (DESIGN.md 12장, 체험판에 맞게 바꾼 줄은 [체험판] 표시)  →  Pickwise.t('screen1.title')
+js/copy.js          화면 문구 (DESIGN.md 12장)  →  Pickwise.t('screen1.title')
 js/store.js         화면끼리 주고받는 데이터(state), 브라우저 임시 저장
 js/calc.js          반영 비율·총점·민감도·What-if 계산 (AI 아님, 코드 계산)
-js/sample-data.js   예시 데이터를 화면에서 쓰기 좋게 꺼내 주는 함수 (외부 AI·API 키 사용 안 함)
+js/ai-client.js     화면에서 서버 함수(/api/...)를 부르는 도우미
+api/criteria.js     서버 함수: AI 기준 추천 (화면 2)
+api/analyze.js      서버 함수: Tavily 웹 검색 + AI 점수·근거·출처 (화면 4→5)
+api/next.js         서버 함수: AI 후속 고민 추천 (화면 6)
+api/_lib/ai.js      서버 함수 공용: Gemini·Tavily 호출, 결과 재사용
 js/ui.js            작은 도우미 함수 (escape, icon, heading, footer, loading)
 js/app.js           화면 전환(#/1 ~ #/6), 헤더, 뒤로가기, 아이콘 그리기
 screens/screen1~6.js  화면별 파일 — 담당자는 자기 파일만 고쳐요
-data/*.json         유정님 샘플 데이터 원본
-data/samples.js     위 JSON을 묶은 파일 (node tools/build-samples.js 로 다시 생성)
+data/*.json         유정님 샘플 데이터 원본 (참고·테스트용, 앱에서는 사용하지 않음)
 docs/DESIGN.md      디자인 설계 문서 v1.1 (하준님)
 docs/design_mockup.pdf  화면 디자인 목업
 ```
